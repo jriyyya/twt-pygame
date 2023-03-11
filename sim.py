@@ -57,6 +57,8 @@ class player(object):
         self.hitbox = (self.x + 17, self.y + 11, 29, 52)
 
     def hit(self):
+        self.isJump = False
+        self.jumpCount = 10
         self.x = 60
         self.y = 410
         self.walkCount = 0
@@ -165,10 +167,12 @@ run = True
 while run:
     clock.tick(27)
 
-    if man.hitbox[1] < goblin.hitbox[1] + goblin.hitbox[3] and man.hitbox[1] + man.hitbox[3] > goblin.hitbox[1]:
-        if man.hitbox[0] + man.hitbox[2] > goblin.hitbox[0] and man.hitbox[0] < goblin.hitbox[0] + goblin.hitbox[2]:
-            man.hit()
-            score -= 5
+    if goblin.visible:
+        if man.hitbox[1] < goblin.hitbox[1] + goblin.hitbox[3] and man.hitbox[1] + man.hitbox[3] > goblin.hitbox[1]:
+            if man.hitbox[0] + man.hitbox[2] > goblin.hitbox[0] and man.hitbox[0] < goblin.hitbox[0] + goblin.hitbox[2]:
+                man.hit()
+                score -= 5
+
 
     if shotLoop > 0:
         shotLoop += 1
