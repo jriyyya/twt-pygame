@@ -12,6 +12,13 @@ char = pygame.image.load('./Game/standing.png')
 
 clock = pygame.time.Clock()
 
+# bulletSound = pygame.mixer.Sound('./Game/bullet.mp3')
+# hitSound = pygame.mixer.Sound('./Game/hit.mp3')
+
+# music = pygame.mixer.Sound('./Game/music.mp3')
+# pygame.mixer.music.play(-1)
+
+
 score = 0
 
 
@@ -48,6 +55,23 @@ class player(object):
                 win.blit(walkLeft[0], (self.x, self.y))
 
         self.hitbox = (self.x + 17, self.y + 11, 29, 52)
+
+    def hit(self):
+        self.x = 60
+        self.y = 410
+        self.walkCount = 0
+        font1 = pygame.font.SysFont('comicsans', 100)
+        text = font1.render('-5', 1, (255,0,0))
+        win.blit(text, (250 - (text.get_width() / 2), 200))
+        pygame.display.update()
+        i = 0
+        while i < 100:
+            pygame.time.delay(10)
+            i += 1
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    i = 301
+                    pygame.quit()
 
 class projectile(object):
     def __init__(self,x,y,radius,color,facing):
@@ -141,6 +165,11 @@ run = True
 while run:
     clock.tick(27)
 
+    if man.hitbox[1] < goblin.hitbox[1] + goblin.hitbox[3] and man.hitbox[1] + man.hitbox[3] > goblin.hitbox[1]:
+        if man.hitbox[0] + man.hitbox[2] > goblin.hitbox[0] and man.hitbox[0] < goblin.hitbox[0] + goblin.hitbox[2]:
+            man.hit()
+            score -= 5
+
     if shotLoop > 0:
         shotLoop += 1
     if shotLoop > 3:
@@ -153,6 +182,7 @@ while run:
     for bullet in bullets:
         if bullet.y - bullet.radius < goblin.hitbox[1] + goblin.hitbox[3] and bullet.y + bullet.radius > goblin.hitbox[1]:
             if bullet.x + bullet.radius > goblin.hitbox[0] and bullet.x - bullet.radius < goblin.hitbox[0] + goblin.hitbox[2]:
+                # hitSound.play()
                 goblin.hit()
                 score += 1
                 bullets.pop(bullets.index(bullet))
@@ -166,6 +196,7 @@ while run:
     keys = pygame.key.get_pressed()
 
     if keys[pygame.K_SPACE] and shotLoop == 0:
+        # bulletSound.play()
         if man.left:
             facing = -1
         else:
